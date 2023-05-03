@@ -1,0 +1,93 @@
+html {
+    font-family: sans-serif;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    padding: 10%;
+}
+
+.form-container {
+    max-width: 80%;
+    margin: auto;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 2%;
+}
+
+.formField {
+    flex: 1;
+}
+
+.formField input {
+    width: 100%;
+    padding: 18px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin-bottom: 18px;
+    border: 1px solid lightgray;
+}
+
+input:focus {
+    outline-color: cornflowerblue;
+}
+
+.blueBackground {
+    background-color: cornflowerblue;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.checkBox {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: row;
+}
+
+
+.terms {
+    margin-left: 140px;
+    overflow-wrap: break-word;
+}
+
+
+
+.actionButtons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.actionButtons button {
+    flex-grow: 1;
+    margin: 0 10px;
+}
+
+.registerButton {   
+    font-size: large;
+    background-color: cornflowerblue;
+    color: white;
+    padding: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    border-color: cornflowerblue;
+}
+
+.signInButton {
+    font-size: large;
+    background-color: lightgreen;
+    color: white;
+    padding: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    border-color:lightgreen;
+}
