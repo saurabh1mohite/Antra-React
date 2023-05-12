@@ -4,16 +4,23 @@ const API = (() => {
 
   const getInventory = () => fetch(URL + '/inventory').then((data) => data.json())
 
-  const addToCart = (inventoryItem) => {
-    // define your method to add an item to cart
-  };
+  const addToCart = (item) => {
+    return fetch(URL + '/cart', {
+        method: "POST",
+        body: JSON.stringify(item),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    }).then((data) => data.json());
+};
 
   const updateCart = (id, newAmount) => {
+
   };
   
 
   const deleteFromCart = (id) => {
-    // define your method to delete an item in cart
+    fetch(URL + "/cart/" + id, { method: "DELETE" }).then((data) => data.json());
   };
 
   const checkout = () => {
@@ -63,35 +70,35 @@ const Model = (() => {
       this.#inventory = newInventory;
       this.#onChange();
     }
-    updateCart(id) {
-      const n = this.#inventory.length;
-      for (let i = 0; i < n; ++i) {
-        if (this.#inventory[i]['id'] === id) {
-          const n1 = this.#cart.length;
-          let flag = false;
-          for (let j=0; j < n1; ++j) {
-            if (this.#cart[j]['id'] == id) {
-              this.#cart[j]['id'] += this.#inventory[i]['id']
-              flag = true;
-              break
-            }
-          }
-          if (! flag) {
-            this.#cart.push(this.#inventory[i]);
-          }
-          this.#inventory[i]['count'] = Math.max(0, this.#inventory[i]['count'] + 1)
-          break
-        }
-      }
-      addToCart()
-    }
+    // updateCart(id) {
+    //   const n = this.#inventory.length;
+    //   for (let i = 0; i < n; ++i) {
+    //     if (this.#inventory[i]['id'] === id) {
+    //       const n1 = this.#cart.length;
+    //       let flag = false;
+    //       for (let j=0; j < n1; ++j) {
+    //         if (this.#cart[j]['id'] == id) {
+    //           this.#cart[j]['id'] += this.#inventory[i]['id']
+    //           flag = true;
+    //           break
+    //         }
+    //       }
+    //       if (! flag) {
+    //         this.#cart.push(this.#inventory[i]);
+    //       }
+    //       this.#inventory[i]['count'] = 0
+    //       break
+    //     }
+    //   }
+    //   this.#onChange();
+    // }
     updateInventory(id, updateAmount) {
       console.log('Update Inventory called')
       const n = this.#inventory.length;
       console.log(id);
       for (let i = 0; i < n; ++i) {
         if (this.#inventory[i]['id'] === id) {
-          this.#inventory[i]['count'] = Math.max(0, this.#inventory[i]['count'] + 1)
+          this.#inventory[i]['count'] = Math.max(0, this.#inventory[i]['count'] + updateAmount)
           break
         }
       }
@@ -145,7 +152,7 @@ const View = (() => {
     inventoryItems.forEach((inventoryItem) => {
       const content = inventoryItem.content;
       console.log(content);
-      const liTemp = `<li inventoryItem-id="${inventoryItem.id}"><span>${content}</span><button class="reduce-btn" >-</button><span>${inventoryItem.count}</span><button class="add-to-cart-btn" >+</button><button class="add-btn" >Add to cart</button></li>`;
+      const liTemp = `<li inventoryItem-id="${inventoryItem.id}"><span>${content}</span><button class="reduce-btn" >-</button><span>${inventoryItem.count}</span><button class="add-btn" >+</button><button class="add-to-cart-btn" >Add to cart</button></li>`;
       inventoryItemsTemp += liTemp;
     });
     inventoryEl.innerHTML = inventoryItemsTemp;
@@ -199,12 +206,39 @@ const Controller = ((model, view) => {
       if (event.target.className !== "add-to-cart-btn") return;
       console.log("add!");
       const id = parseInt(event.target.parentNode.getAttribute("inventoryItem-id"));
-      state.updateCart(id)
-      state.updateInventory(id, -Infinity);
+      // state.updateCart(id)
+      cartInsertObj = state.inventory.filter((item) => item.id === id)[0]
+      if (state.cart.filter((item => item.id === id)).length !== 0) {
+        // put
+        console.log('PUT')
+        model.updateCart(cartInsertObj).then((data) => {
+
+        })
+      } else {
+        //post
+        console.log('POST')
+        model.addToCart(cartInsertObj).then((data) => {
+          state.cart = [data, ...state.cart]
+          state.updateInventory(id, -Infinity);
+        })
+  
+      }
+
+
     });
   };
 
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    view.cartEl.addEventListener("click", (event) => {
+      if (event.target.className !== "delete-btn") return;
+      console.log("delete!");
+      const id = parseInt(event.target.parentNode.getAttribute("cartItem-id"));
+      model.deleteFromCart(id).then((data) => {
+        state.cart = state.cart.filter((item) => item.id !== id);
+        state.inventory = state.inventory.filter((item) => item.id !== id);
+    });
+    });
+  };
 
   const handleCheckout = () => {};
   const bootstrap = () => {
