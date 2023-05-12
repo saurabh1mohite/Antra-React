@@ -3,27 +3,61 @@
     flex-direction: row;
     justify-content: space-around;
     margin: 0 auto;
-    
+    width: 50vw;
+    border-style: solid;
+    border-width: 4px;
+    border-color: black;
+    border-radius: 5px;
 }
 
 .delete-btn {
     background-color: cornflowerblue;
     color: white;
+    border-radius: 5px;
+    margin: 5%;
 }
 
 .add-to-cart-btn {
     color: white;
     background-color: cornflowerblue;
+    border-radius: 5px;
+    margin: 5%;
 }
 
 .reduce-btn {
     background-color: red;
     color: white;
+    border-radius: 5px;
+    margin: 5%;
     margin: 5%;
 }
 
 
 .add-btn {
     background-color: green;
+    border-radius: 5px;
     color: white;
+    margin: 5%;
 }
+
+.checkout-btn {
+    background-color: black;
+    color: white;
+    border-radius:5px;
+    margin: 5%;
+}
+
+.inventory-container ul {
+    list-style-type: none;
+}
+
+.inventory-container li {
+    background-color: rgb(255,255,224);
+    margin-top: 5%;
+}
+
+.cart-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
