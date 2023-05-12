@@ -1,0 +1,29 @@
+#app {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 0 auto;
+    
+}
+
+.delete-btn {
+    background-color: cornflowerblue;
+    color: white;
+}
+
+.add-to-cart-btn {
+    color: white;
+    background-color: cornflowerblue;
+}
+
+.reduce-btn {
+    background-color: red;
+    color: white;
+    margin: 5%;
+}
+
+
+.add-btn {
+    background-color: green;
+    color: white;
+}

@@ -15,11 +15,18 @@ const API = (() => {
 };
 
   const updateCart = (id, newAmount) => {
-
+    return fetch(URL + '/cart/' + id, {
+      method: "PUT",
+      body: JSON.stringify(newAmount),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((data) => data.json());
   };
   
 
   const deleteFromCart = (id) => {
+    console.log(URL + "/cart/" + id);
     fetch(URL + "/cart/" + id, { method: "DELETE" }).then((data) => data.json());
   };
 
@@ -70,28 +77,6 @@ const Model = (() => {
       this.#inventory = newInventory;
       this.#onChange();
     }
-    // updateCart(id) {
-    //   const n = this.#inventory.length;
-    //   for (let i = 0; i < n; ++i) {
-    //     if (this.#inventory[i]['id'] === id) {
-    //       const n1 = this.#cart.length;
-    //       let flag = false;
-    //       for (let j=0; j < n1; ++j) {
-    //         if (this.#cart[j]['id'] == id) {
-    //           this.#cart[j]['id'] += this.#inventory[i]['id']
-    //           flag = true;
-    //           break
-    //         }
-    //       }
-    //       if (! flag) {
-    //         this.#cart.push(this.#inventory[i]);
-    //       }
-    //       this.#inventory[i]['count'] = 0
-    //       break
-    //     }
-    //   }
-    //   this.#onChange();
-    // }
     updateInventory(id, updateAmount) {
       console.log('Update Inventory called')
       const n = this.#inventory.length;
@@ -211,8 +196,11 @@ const Controller = ((model, view) => {
       if (state.cart.filter((item => item.id === id)).length !== 0) {
         // put
         console.log('PUT')
+        cartExistingObj = state.cart.filter((item => item.id === id))
+        cartExistingObj['count'] += cartInsertObj['count']
         model.updateCart(cartInsertObj).then((data) => {
-
+          state.cart = [cartExistingObj, ...state.cart.filter((item) => item.id !== id)]
+          state.updateInventory(id, -Infinity);
         })
       } else {
         //post
@@ -233,9 +221,9 @@ const Controller = ((model, view) => {
       if (event.target.className !== "delete-btn") return;
       console.log("delete!");
       const id = parseInt(event.target.parentNode.getAttribute("cartItem-id"));
+      console.log(id)
       model.deleteFromCart(id).then((data) => {
         state.cart = state.cart.filter((item) => item.id !== id);
-        state.inventory = state.inventory.filter((item) => item.id !== id);
     });
     });
   };
