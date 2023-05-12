@@ -26,8 +26,7 @@ const API = (() => {
   
 
   const deleteFromCart = (id) => {
-    console.log(URL + "/cart/" + id);
-    fetch(URL + "/cart/" + id, { method: "DELETE" }).then((data) => data.json());
+    return fetch(URL + "/cart/" + id, { method: "DELETE" }).then((data) => data.json());
   };
 
   const checkout = () => {
@@ -118,6 +117,7 @@ const View = (() => {
   // implement your logic for View
   const inventoryEl = document.querySelector('.inventory-container ul');
   const cartEl = document.querySelector('.cart-wrapper ul');
+  const checkoutBtn = document.querySelector('.checkout-btn');
   
   // renderTodos
   const renderCartItems = (cartItems) => {
@@ -150,7 +150,8 @@ const View = (() => {
     renderInventoryItems,
     renderCartItems,
     inventoryEl,
-    cartEl
+    cartEl,
+    checkoutBtn
   };
 })();
 
@@ -196,7 +197,7 @@ const Controller = ((model, view) => {
       if (state.cart.filter((item => item.id === id)).length !== 0) {
         // put
         console.log('PUT')
-        cartExistingObj = state.cart.filter((item => item.id === id))
+        cartExistingObj = state.cart.filter((item => item.id === id))[0]
         cartExistingObj['count'] += cartInsertObj['count']
         model.updateCart(cartInsertObj).then((data) => {
           state.cart = [cartExistingObj, ...state.cart.filter((item) => item.id !== id)]
@@ -224,11 +225,24 @@ const Controller = ((model, view) => {
       console.log(id)
       model.deleteFromCart(id).then((data) => {
         state.cart = state.cart.filter((item) => item.id !== id);
-    });
+      });
+
     });
   };
 
-  const handleCheckout = () => {};
+  const handleCheckout = () => {
+    // Call the checkout function from the model
+    view.checkoutBtn.addEventListener("click", (event) => {
+      console.log('checkout')
+      event.preventDefault()
+      if (event.target.className !== "checkout-btn") return;
+      model.checkout().then(() => {
+        state.cart = []
+        console.log("Checkout successful");
+      });
+    });
+  };
+
   const bootstrap = () => {
     handleAddToCart();
     handleDelete();
