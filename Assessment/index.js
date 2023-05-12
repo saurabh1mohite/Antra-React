@@ -119,7 +119,6 @@ const View = (() => {
   const cartEl = document.querySelector('.cart-wrapper ul');
   const checkoutBtn = document.querySelector('.checkout-btn');
   
-  // renderTodos
   const renderCartItems = (cartItems) => {
     let cartItemsTemp = "";
     cartItems.forEach((cartItem) => {
@@ -131,7 +130,6 @@ const View = (() => {
     cartEl.innerHTML = cartItemsTemp;
   }
 
-  //render todos
   const renderInventoryItems = (inventoryItems) => {
     let inventoryItemsTemp = "";
     inventoryItems.forEach((inventoryItem) => {
@@ -161,8 +159,15 @@ const Controller = ((model, view) => {
 
   const init = () => {
     model.getCart().then((data) => {
-      carItems = data.map((item) => ({ ...item, count: 0 }));
-      state.cart = carItems;
+      cartItems = data.map((item) => {
+        if ('count' in item) {
+          return item;
+        } else {
+          return { ...item, count: 0 };
+        }
+      });
+      
+      state.cart = cartItems;
     });
 
     model.getInventory().then((data) => {
